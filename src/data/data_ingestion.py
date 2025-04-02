@@ -4,11 +4,16 @@ import pandas as pd
 pd.set_option('future.no_silent_downcasting', True)
 
 import os
+from dotenv import load_dotenv
 from sklearn.model_selection import train_test_split
 import yaml
 import logging
 from src.logger import logging
 from src.connections import s3_connection
+load_dotenv() 
+
+aws_access_key = os.getenv("aws_access_key")
+aws_secret_key = os.getenv("aws_secret_key")
 
 
 def load_params(params_path: str) -> dict:
@@ -75,10 +80,10 @@ def main():
         test_size = params['data_ingestion']['test_size']
         # test_size = 0.2
         
-        #df = load_data(data_url='https://raw.githubusercontent.com/vikashishere/Datasets/refs/heads/main/data.csv')
-        # s3 = s3_connection.s3_operations("sent-capstone", aws_access_key,, aws_secret_key)
-        # df = s3.fetch_file_from_s3("data.csv")
-        df = pd.read_csv(r"notebooks\data.csv")
+        df = load_data(data_url='https://raw.githubusercontent.com/vikashishere/Datasets/refs/heads/main/data.csv')
+        s3 = s3_connection.s3_operations("sent-capstone", aws_access_key,aws_secret_key)
+        df = s3.fetch_file_from_s3("data.csv")
+        
 
 
 
