@@ -1,4 +1,0 @@
-[core]
-    remote = myromote
-['remote "myromote"']
-    url = s3://dvcsent
