@@ -43,8 +43,12 @@ def apply_bow(train_data: pd.DataFrame, test_data: pd.DataFrame, max_features: i
     """Apply Count Vectorizer to the data."""
     try:
         logging.info("Applying BOW...")
+        
+        # 1. Ensure models directory exists
+        os.makedirs('models', exist_ok=True)
+        
+        # 2. Your existing vectorizer code
         vectorizer = CountVectorizer(max_features=max_features)
-
         X_train = train_data['review'].values
         y_train = train_data['sentiment'].values
         X_test = test_data['review'].values
@@ -55,17 +59,47 @@ def apply_bow(train_data: pd.DataFrame, test_data: pd.DataFrame, max_features: i
 
         train_df = pd.DataFrame(X_train_bow.toarray())
         train_df['label'] = y_train
-
         test_df = pd.DataFrame(X_test_bow.toarray())
         test_df['label'] = y_test
 
-        pickle.dump(vectorizer, open('models/vectorizer.pkl', 'wb'))
+        # 3. Safer file handling
+        with open('models/vectorizer.pkl', 'wb') as f:
+            pickle.dump(vectorizer, f)
+            
         logging.info('Bag of Words applied and data transformed')
-
         return train_df, test_df
+        
     except Exception as e:
         logging.error('Error during Bag of Words transformation: %s', e)
-        raise
+        raise  
+
+# def apply_bow(train_data: pd.DataFrame, test_data: pd.DataFrame, max_features: int) -> tuple:
+#     """Apply Count Vectorizer to the data."""
+#     try:
+#         logging.info("Applying BOW...")
+#         vectorizer = CountVectorizer(max_features=max_features)
+
+#         X_train = train_data['review'].values
+#         y_train = train_data['sentiment'].values
+#         X_test = test_data['review'].values
+#         y_test = test_data['sentiment'].values
+
+#         X_train_bow = vectorizer.fit_transform(X_train)
+#         X_test_bow = vectorizer.transform(X_test)
+
+#         train_df = pd.DataFrame(X_train_bow.toarray())
+#         train_df['label'] = y_train
+
+#         test_df = pd.DataFrame(X_test_bow.toarray())
+#         test_df['label'] = y_test
+
+#         pickle.dump(vectorizer, open('models/vectorizer.pkl', 'wb'))
+#         logging.info('Bag of Words applied and data transformed')
+
+#         return train_df, test_df
+#     except Exception as e:
+#         logging.error('Error during Bag of Words transformation: %s', e)
+#         raise
 
 def save_data(df: pd.DataFrame, file_path: str) -> None:
     """Save the dataframe to a CSV file."""
